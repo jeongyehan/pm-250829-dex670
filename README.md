@@ -36,3 +36,4 @@
 - curl -ik -X PUT -H "Content-Type: application/json" -d "{\"lastName\":\"Mule\",\"numBags\":2}" https://localhost:8081/api/v1/tickets/PNR123/checkin
 - curl -ik -H "Content-Type:text/xml" -d "<CancellationNotification><PNR>PNR123</PNR><PassengerLastName>Mule</PassengerLastName></CancellationNotification>" https://localhost:8081/api/cancelFlight
 - curl -ik -H "Content-Type:text/plain" -d "invalid content type and content" https://localhost:8081/api/cancelFlight
+- cp -r $STUDENT_FILE/walkthroughs/devint/module02/wt2-4_starter/mobile-notifications-eapp $PROJECT_HOME/.
