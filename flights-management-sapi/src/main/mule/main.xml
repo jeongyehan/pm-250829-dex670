@@ -137,6 +137,51 @@ ns0#checkIn: {
     <logger level="INFO" message="Received Cancellation Notification" doc:name="Received Cancellation Notification" />
 		<vm:publish doc:name="flight-cancel-notifs-q" doc:id="c6055e3d-404b-4ed0-8408-f7780ca10bff" config-ref="vmConfig" sendCorrelationId="ALWAYS" queueName="flight-cancel-notifs-q"/>
 </flow>
+<flow name="deliver-flight-cancelled-event">
+    <vm:listener queueName="flight-cancel-notifs-q" transactionalAction="ALWAYS_BEGIN" config-ref="vmConfig" doc:name="flight-cancel-notifs-q">
+    <redelivery-policy maxRedeliveryCount="3" idExpression="#[correlationId]"/>
+</vm:listener>
+<logger level="INFO" message="Received" doc:name="Received"/>
+<try transactionalAction="BEGIN_OR_JOIN">
+    <set-variable value="#[output text/plain --- payload.^raw]" doc:name="payload.^raw&#10;" doc:id="fe2f9157-5f4a-4bae-a521-4c217cf28a85" variableName="originalPayload"/>
+			<ee:transform>
+        <ee:message>
+            <ee:set-payload><![CDATA[%dw 2.0
+            output application/json
+            ---
+            {
+              pnr: payload.CancellationNotification.PNR,
+              lastNameOfPassenger: payload.CancellationNotification.PassengerLastName
+            }]]></ee:set-payload>
+        </ee:message>
+    </ee:transform>
+    <set-variable variableName="msgValid" value="#[true]" doc:name="msgValid = true"/>
+    <error-handler>
+        <on-error-continue enableNotifications="false" logException="false">
+            <flow-ref name="send-to-vm-dlq" doc:name="send-to-vm-dlq"/>
+            <set-variable variableName="msgValid" value="#[false]" doc:name="msgValid = false"/>
+        </on-error-continue>
+    </error-handler>
+</try>
+    
+	<error-handler>
+    <on-error-continue type="MULE:REDELIVERY_EXHAUSTED" enableNotifications="false" logException="false">
+        <logger level="ERROR" message="Giving up" doc:name="Giving up"/>
+        <flow-ref name="send-to-vm-dlq" doc:name="send-to-vm-dlq"/>
+    </on-error-continue>
+</error-handler> 
+</flow>
+<sub-flow name="send-to-vm-dlq">
+    <vm:publish queueName="flight-cancel-notifs-dlq" timeout="5000" timeoutUnit="MILLISECONDS" config-ref="vmConfig" doc:name="flight-cancel-notifs-dlq">
+			<vm:content ><![CDATA[#[vars.originalPayload]]]></vm:content>
+		</vm:publish>
+</sub-flow>
+<flow name="handle-dlq">
+    <vm:listener queueName="flight-cancel-notifs-dlq" config-ref="vmConfig" doc:name="flight-cancel-notifs-dlq">
+        <redelivery-policy maxRedeliveryCount="3" idExpression="#[correlationId]" />
+    </vm:listener>
+    <logger level="INFO" message="Processing message from DLQ" />
+</flow>
 <flow name="register-callback">
     <scheduler>
         <scheduling-strategy>
