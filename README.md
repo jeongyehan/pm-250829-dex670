@@ -21,3 +21,8 @@
 ## Commands
 - export PROJECT_HOME=/Users/yehan.jeong/Workspace/AnypointStudio/202508.P_DEX670_2
 - export STUDENT_FILE=/Users/yehan.jeong/Desktop/CDEV-DEX670-EN-25oct2024-Student-Files
+- curl -ik -X PUT -H "Content-Type: application/json" -d "{\"lastName\" :\"Smith\",\"numBags\":2}" https://localhost:8081/api/v1/tickets/PNR123/checkin
+- curl -ik -X PUT -H "Content-Type: application/json" -d "{\"payerID\": \"STJ8222K092ST\", \"paymentID\": \"PAY-1AKD7482FAB9STATKO\"}" https://localhost:8081/api/v1/tickets/N123/paymentApproval
+- curl -ik https://localhost:8081/alive
+- curl -ik https://localhost:8081/ready
+- curl -ik -X PUT -H "Content-Type: application/json" -d "{\"lastName\" :\"Mule\",\"numBags\":2}" https://localhost:8081/api/v1/tickets/PNR123/checkin
