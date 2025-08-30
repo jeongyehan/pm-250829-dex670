@@ -24,7 +24,7 @@
   </http:listener-config>
   <global-property name="encrypt.key" value="secure12345"/>
   <anypoint-mq:config name="amqConfig">
-    <anypoint-mq:connection clientId="924f0aa4f18345fb8e02595f2461106a" clientSecret="9f571d2f80B94F2A890773E2585532B6" url="https://mq-ap-northeast-1.anypoint.mulesoft.com/api/v1/organizations/22832e58-de75-40d3-858b-d4d6bc5a489b/environments/6376d3a8-25a1-46ac-b1e8-3976d1aa2de7" />
+    <anypoint-mq:connection clientId="3478ad19ab124446a987e07185afb2a5" clientSecret="16021f5e2eAC43438f84Eba9A189dbbE" url="https://mq-ap-northeast-1.anypoint.mulesoft.com/api/v1/organizations/93853e26-66b4-4720-959e-0669221d7d14/environments/927d67c9-d087-4658-ac7d-6c5e3bf402d9" />
 </anypoint-mq:config>
 <vm:config name="mobileAppNetworkVMConfig">
     <vm:queues>

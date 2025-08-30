@@ -180,7 +180,11 @@ ns0#checkIn: {
 </try>
     <choice>
     <when expression="#[vars.msgValid]">
-        <anypoint-mq:publish destination="cancelled-flights-exchg-dev" messageId="#[correlationId]" config-ref="amqConfig"  doc:name="cancelled-flights-exchg-dev" />
+        <anypoint-mq:publish destination="cancelled-flights-exchg-dev" messageId="#[correlationId]" config-ref="amqConfig"  doc:name="cancelled-flights-exchg-dev" >
+					<anypoint-mq:properties ><![CDATA[#[{
+    "correlationId": correlationId
+}]]]></anypoint-mq:properties>
+				</anypoint-mq:publish>
     </when>
 </choice>
 
