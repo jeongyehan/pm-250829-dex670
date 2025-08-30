@@ -11,7 +11,7 @@
 		<!-- students: replace with your AP org ID -->
 		<groupId>c1c00018-c4df-45c7-9dfc-1493d1455b02</groupId>
 		<artifactId>solutions-parent-pom</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
+		<version>1.0.0</version>
 		<relativePath>../parent-pom/pom.xml</relativePath>
 	</parent>
 	<groupId>c1c00018-c4df-45c7-9dfc-1493d1455b02</groupId>
