@@ -35,6 +35,11 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+		    <groupId>org.mule.modules</groupId>
+		    <artifactId>mule-validation-module</artifactId>
+		    <classifier>mule-plugin</classifier>
+		</dependency>
 		<!-- limitation in Mule Maven tooling: must define before apikit! -->
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
