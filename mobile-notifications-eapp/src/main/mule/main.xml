@@ -15,6 +15,26 @@
 	    <anypoint-mq:subscriber config-ref="amqConfig" destination="cancelled-flights-mobile-queue-dev" acknowledgementMode="MANUAL">
 	        <reconnect-forever frequency="1000" />
 	    </anypoint-mq:subscriber>
-	    <logger level="INFO" message="Received" doc:name="Received"/>
+	    <set-variable value="#[attributes.ackToken]" doc:name="attributes.ackToken" doc:id="a67dbfde-90cc-4bcb-b47f-1059443879d0" variableName="mqAckToken"/>
+		<logger level="INFO" message="Received" doc:name="Received"/>
+		<ee:transform doc:name="Convert to Our Event Format" doc:id="cb016654-ea67-474d-b720-d35deaf0345f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+    pnr: payload.pnr,
+    lastName: payload.lastNameOfPassenger
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<vm:publish queueName="mobile-app-native-notifs-q" doc:name="mobile-app-native-notifs-q" doc:id="d614dfed-122a-4011-8fe3-02054bb1bdaf" config-ref="mobileAppNetworkVMConfig"/>
+		<anypoint-mq:ack doc:name="vars.mqAckToken" doc:id="82508fcd-e8f8-4022-b072-7d6fba1e7b5f" config-ref="amqConfig" ackToken="#[vars.mqAckToken]"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="405c07f0-1142-4299-869a-7fdf15aed74b" >
+				<anypoint-mq:nack doc:name="Nack" doc:id="33340f0d-30a9-404f-949c-af25fcea0f2a" config-ref="amqConfig" ackToken="#[vars.mqAckToken]"/>
+			</on-error-propagate>
+		</error-handler>
 	</flow>
 </mule>
